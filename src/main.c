@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main(){
-  Buffer *buffer = create_example_buff("My name is parker this is my string");
+  Buffer *buffer = create_example_buff("HELLO WORLD");
   printf("----------------------------------------\n");
   printf("STRING BEFORE SHIFTING:\n");
   printf("----------------------------------------\n");

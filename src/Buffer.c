@@ -59,6 +59,9 @@ void move_cursor_left(Buffer *buff, size_t new_l) {
 */
 
 //this is wrong for a lot of reasons
+//Also need to make sure we aren't moving too far right
+//limit is the BUFF_SIZE - GAP_SIZE that's how much free space we have
+//don't want to move more right that that no point
 void move_cursor_right(Buffer *buff, size_t new_l){
   size_t shift_size = new_l - buff->left;
   if (buff->gap_size == buff->buff_size || buff->right == buff->buff_size-1 || shift_size==0) {
