@@ -26,6 +26,7 @@ find_package(Curses REQUIRED)
 add_executable(
 MyOptimizedProgram 
 src/Buffer.c
+src/Lines.c
 src/main.c
 )
 

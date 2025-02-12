@@ -28,4 +28,13 @@ void print_buffer_info(Buffer *buffer);
 
 Buffer* create_example_buff(const char* string);
 
+void write_char(Buffer *buff, char c);
+
+void delete_char(Buffer *buff);
+
+size_t get_min(size_t a, size_t b);
+
+size_t get_max(size_t a, size_t b);
+
+void free_buffer(Buffer *buff);
 

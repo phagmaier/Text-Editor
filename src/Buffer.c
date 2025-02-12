@@ -1,5 +1,19 @@
 #include "Buffer.h"
 
+size_t get_min(size_t a, size_t b){
+  if (a > b){
+    return b;
+  }
+  return a;
+}
+size_t get_max(size_t a, size_t b){
+  if (a > b){
+    return a;
+  }
+  return b;
+
+}
+
 //string actually does not need to be null terminated
 //will still have null characters to indicate the 
 //end of the string and when to stop outputting characters
@@ -28,7 +42,6 @@ void move_cursor_left(Buffer *buff, size_t new_l) {
   if (buff->gap_size == buff->buff_size || buff->left == 0 || new_l >= buff->left) {
     return;
   }
-
   size_t shift_size = buff->left - new_l;
 
   memmove(buff->str + buff->right - shift_size + 1, 
@@ -39,36 +52,20 @@ void move_cursor_left(Buffer *buff, size_t new_l) {
   buff->right = buff->gap_size + buff->left - 1;
 }
 
-/*
-void move_cursor_left(Buffer *buff, size_t new_l) {
-    if (buff->gap_size == buff->buff_size || buff->left == 0 || new_l >= buff->left) {
-        return;
-    }
 
-    size_t shift_size = buff->left - new_l;
-
-    // Move characters to the right to shift the gap left
-    memmove(buff->str + buff->right - shift_size + 1, 
-            buff->str + new_l, 
-            shift_size);
-
-    // Update left and right boundaries
-    buff->left = new_l;
-    buff->right = buff->gap_size + buff->left - 1;
-}
-*/
-
-//this is wrong for a lot of reasons
-//Also need to make sure we aren't moving too far right
-//limit is the BUFF_SIZE - GAP_SIZE that's how much free space we have
-//don't want to move more right that that no point
+//need to make sure you don't move too far right
+//buff_size - gap size is the limit
 void move_cursor_right(Buffer *buff, size_t new_l){
+  new_l = get_min(new_l,(buff->buff_size - buff->gap_size));
   size_t shift_size = new_l - buff->left;
   if (buff->gap_size == buff->buff_size || buff->right == buff->buff_size-1 || shift_size==0) {
     return;
   }
-  memmove(buff->str + buff->gap_size + shift_size, buff->str + buff->gap_size, buff->left - new_l);
+  memmove(buff->str + buff->left,
+            buff->str+ buff->right+ 1,
+            shift_size);
   buff->left = new_l;
+  buff->right = new_l + buff->gap_size-1;
 }
 
 void print_buff(Buffer *buff){
@@ -119,4 +116,30 @@ Buffer* create_example_buff(const char* string){
   return buff;
 }
 
+void delete_char(Buffer *buff){
+  if (buff->left){
+    --buff->left;
+    ++buff->gap_size;
+  }
+}
 
+void write_char(Buffer *buff, char c){
+  if(!buff->gap_size || buff->left==buff->buff_size-1){
+    expand_buff(buff);
+  } 
+  buff->str[buff->left] = c;
+  --buff->gap_size;
+  ++buff->left;
+}
+
+void free_buffer(Buffer *buff){
+  if (buff->str){
+    free(buff->str);
+  } 
+
+  buff->str = NULL;
+  buff->buff_size=0;
+  buff->gap_size=0;
+  buff->left=0;
+  buff->right=0;
+}
